@@ -26,17 +26,19 @@ SECRET_KEY = 'django-insecure-e=^9ivm0pmcf0)ox7j626t^#lcapq-4$8bwt1d0!a^$sh3nwa_
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+AUTH_USER_MODEL='api.User'
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'api'
 ]
 
 MIDDLEWARE = [
