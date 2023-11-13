@@ -5,6 +5,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
 class User(AbstractUser):
     email=models.EmailField(unique=True)
     gender=models.CharField(max_length=10,null=True)
@@ -72,3 +75,15 @@ class GrpMsg(models.Model):
 
     # def __str__(self):
     #     return f'Group Message {self.msgId} from {self.senderId.username}'
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        # Notify the WebSocket consumers about the new message
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            "chat_group",  # Group name
+            {
+                "type": "chat.message",
+                "message": "A new message is available.",
+            },
+        )
